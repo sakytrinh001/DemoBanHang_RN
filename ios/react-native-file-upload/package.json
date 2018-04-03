@@ -1,0 +1,57 @@
+{
+  "_from": "react-native-file-upload",
+  "_id": "react-native-file-upload@1.0.4",
+  "_inBundle": false,
+  "_integrity": "sha1-2+VjtSydRsKOglcm3thFGLhZiIg=",
+  "_location": "/react-native-file-upload",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "react-native-file-upload",
+    "name": "react-native-file-upload",
+    "escapedName": "react-native-file-upload",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/react-native-file-upload/-/react-native-file-upload-1.0.4.tgz",
+  "_shasum": "dbe563b52c9d46c28e825726ded84518b8598888",
+  "_spec": "react-native-file-upload",
+  "_where": "/Users/mac/Desktop/DemoBanHang",
+  "author": {
+    "name": "Liucw"
+  },
+  "bugs": {
+    "url": "https://github.com/booxood/react-native-file-upload/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "A file upload plugin for react-native",
+  "homepage": "https://github.com/booxood/react-native-file-upload",
+  "keywords": [
+    "react-component",
+    "react-native",
+    "ios",
+    "file",
+    "upload"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "react-native-file-upload",
+  "peerDependencies": {
+    "react-native": ">=0.4.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/booxood/react-native-file-upload.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.4"
+}
