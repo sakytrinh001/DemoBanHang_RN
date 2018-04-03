@@ -3,7 +3,7 @@ import { TouchableHighlight, Modal, Image, ScrollView, TextInput, Dimensions, Te
 const { width, height } = Dimensions.get('window')
 import { NavigationActions } from 'react-navigation';
 import Spinner from 'react-native-loading-spinner-overlay'
-import { FontCustom, FontColor, formatConcurency } from '../../../index'
+import { FontCustom, FontColor, formatConcurency } from '../../Contanst/index'
 import ListProducts from '../ListProductsOrder/ListProductsOrder'
 import Global from '../Global'
 
@@ -59,7 +59,8 @@ export default class ListView extends React.Component {
                         <Text style={[styles.textNumberColor, { fontFamily: FontCustom.Regular }, { color: FontColor.ColorTextApp }]}>
                             1 màu
                         </Text>
-                        <Text style={[styles.textStatusProduct, { color: item.Status.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "") == 'con hang'.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "") ? 'green' : '#FA7600' },
+                        <Text style={[styles.textStatusProduct, { color: item.Status.toUpperCase() ==
+                         'con hang'.toUpperCase() ? 'green' : '#FA7600' },
                         { fontFamily: FontCustom.Regular }]}>
                             {item.Status}
                         </Text>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Dimensions, TextInput, Text, TouchableOpacity, Image, FlatList, Alert } from 'react-native';
 const { width, height } = Dimensions.get('window')
 import Global from '../Global'
-import { FontCustom, FontColor, formatConcurency } from '../../../index'
+import { FontCustom, FontColor, formatConcurency } from '../../Contanst/index'
 
 export default class ListProductsOrder extends Component {
 

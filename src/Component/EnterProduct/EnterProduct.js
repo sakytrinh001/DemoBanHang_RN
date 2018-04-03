@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { TextInput, Image, ScrollView, Dimensions, Text, TouchableOpacity, View, StyleSheet, FlatList, Alert, RefreshControl } from 'react-native';
+import { TextInput, Image, ScrollView, Dimensions, Text,
+     TouchableOpacity, View, StyleSheet, FlatList, Alert, RefreshControl } from 'react-native';
 const { width, height } = Dimensions.get('window')
 import { NavigationActions } from 'react-navigation';
 import Spinner from 'react-native-loading-spinner-overlay'
-import { FontColor, Background, FontCustom, formatConcurency } from '../../../index';
+import { FontColor, Background, FontCustom, formatConcurency } from './../../Contanst/index';
 import ImagePicker from 'react-native-image-crop-picker';
 import ActionSheet from 'react-native-actionsheet'
 import { postWithCheckingToken } from '../Menu/networking'
@@ -16,10 +17,7 @@ const optionsStatus = ['Đóng', 'Còn hàng', 'Sắp về', 'Hết hàng']
 const optionsType = ['Đóng', 'Running', 'Chelsea Boost', 'Sandal']
 const CANCEL_INDEX = 0
 const DESTRUCTIVE_INDEX = 4
-const slideAnimation = new SlideAnimation({
-    slideFrom: 'top',
-});
-const FileUpload = require('NativeModules').FileUpload;
+
 
 export default class EnterProduct extends React.Component {
 
