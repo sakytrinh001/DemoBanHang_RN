@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { TouchableHighlight, Modal, Image, ScrollView, TextInput, Dimensions, Text, TouchableOpacity, View, StyleSheet, FlatList, Alert, RefreshControl } from 'react-native';
+import { TouchableHighlight, Modal, Platform, Image, ScrollView, TextInput, Dimensions, Text, TouchableOpacity, View, StyleSheet, FlatList, Alert, RefreshControl } from 'react-native';
 const { width, height } = Dimensions.get('window')
 import { NavigationActions } from 'react-navigation';
 import Spinner from 'react-native-loading-spinner-overlay'
 import { FontCustom, FontColor, formatConcurency } from '../../Contanst/index'
 import ListProducts from '../ListProductsOrder/ListProductsOrder'
 import Global from '../Global'
+import FastImage from 'react-native-fast-image'
 
 
 export default class ListView extends React.Component {
@@ -40,7 +41,6 @@ export default class ListView extends React.Component {
     }
 
     componentWillMount() {
-        this.setState({ visible: true })
         this.getAPI()
         this.getTypeProduct()
     }
@@ -52,15 +52,19 @@ export default class ListView extends React.Component {
 
     renderItem(item, index) {
         return (
-            <TouchableOpacity style={styles.itemBlock} onPress={() => this.GetItem(item)}>
+            <View style={styles.itemBlock} >
                 <View style={styles.itemMeta} onPress={this.GetItem.bind(this, item.title)}>
-                    <Image source={{ uri: `${baseHost}${urlimage}${item.ImageUrl}` }} style={styles.itemImage} />
+                    <Image source={{ 
+                        uri: `${baseHost}${urlimage}${item.ImageUrl}`}}
+                        style={styles.itemImage} />
                     <View style={styles.viewColorProduct}>
                         <Text style={[styles.textNumberColor, { fontFamily: FontCustom.Regular }, { color: FontColor.ColorTextApp }]}>
                             1 màu
                         </Text>
-                        <Text style={[styles.textStatusProduct, { color: item.Status.toUpperCase() ==
-                         'con hang'.toUpperCase() ? 'green' : '#FA7600' },
+                        <Text style={[styles.textStatusProduct, {
+                            color: item.Status.toUpperCase() ==
+                                'con hang'.toUpperCase() ? 'green' : '#FA7600'
+                        },
                         { fontFamily: FontCustom.Regular }]}>
                             {item.Status}
                         </Text>
@@ -83,7 +87,7 @@ export default class ListView extends React.Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </TouchableOpacity>
+            </View>
         )
     }
 
@@ -193,8 +197,8 @@ export default class ListView extends React.Component {
         )
     }
 
-    setModalVisible(visible) {
-        this.setState({ modalVisible: visible });
+    setModalFilter(visible) {
+        this.setState({ modalFilter: visible });
     }
 
     renderItemFilter(item, index) {
@@ -251,21 +255,24 @@ export default class ListView extends React.Component {
         })
     }
 
+    setModalVisible(visible) {
+        this.setState({modalVisible: visible});
+      }
+
     render() {
-        this.getTotal()
         return (
             <View style={styles.container}>
                 <Modal
                     animationType="slide"
-                    transparent={true}
+                    transparent={false}
                     visible={this.state.modalVisible}
+                    onRequestClose={() => {}}
                 >
                     <View style={styles.viewFilter}>
                         <View>
                             <ListProducts dataProductsOrder={this.state.dataSaveOrderProduct}
-                                total={this.getTotal()}
                             />
-                            <TouchableOpacity style={styles.closeViewCash} onPress={() => { this.setModalVisible(!this.state.modalVisible) }}>
+                            <TouchableOpacity style={styles.closeViewCash} onPress={() => { this.setModalVisible(false) }}>
                                 <Image source={require('../../imagesrc/ic_cancel_black.png')} style={styles.imgSearch} />
                             </TouchableOpacity>
                         </View>
@@ -273,16 +280,17 @@ export default class ListView extends React.Component {
                 </Modal>
                 <Modal
                     animationType="slide"
-                    transparent={true}
+                    transparent={false}
                     visible={this.state.modalFilter}
+                    onRequestClose={() => {}}
                 >
                     <View style={styles.viewFilter}>
-                        <View style={styles.viewContainsFilter}>
+                        <View style={[styles.viewContainsFilter, {marginBottom: Platform.OS === 'android' ? 50 : 10}, {marginTop: Platform.OS === 'android' ? 10 : 30}]}>
                             <View style={styles.viewTopFilter}>
                                 <Text style={[styles.textTitleFilter, { fontFamily: FontCustom.SemiBold }, { color: FontColor.ColorTextApp }]}>
-                                    Filter
+                                    Bộ lọc
                                 </Text>
-                                <TouchableOpacity style={styles.touchCloseFilter} onPress={() => this.setState({ modalFilter: false })}>
+                                <TouchableOpacity style={styles.touchCloseFilter} onPress={() => this.setModalFilter(false)}>
                                     <Image source={require('../../imagesrc/ic_cancel_black.png')} style={{ width: 24, height: 24 }} />
                                 </TouchableOpacity>
                             </View>
@@ -296,17 +304,17 @@ export default class ListView extends React.Component {
                                 renderItem={({ item, index }) => this.renderItemFilter(item, index)} />
                             <TouchableOpacity style={styles.touchApplyFilter} onPress={() => this.onPressApply()}>
                                 < Text style={[styles.textApplyFilter, { fontFamily: FontCustom.Regular }]}>
-                                    Apply
+                                    Đồng Ý
                                 </Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.touchCancelFilter} onPress={() => this.setState({ modalFilter: false })}>
-                                < Text style={[styles.textCancelFilter, {fontFamily: FontCustom.Regular}]}>
-                                    Cancel
+                            <TouchableOpacity style={styles.touchCancelFilter} onPress={() => this.setModalFilter(false)}>
+                                < Text style={[styles.textCancelFilter, { fontFamily: FontCustom.Regular }]}>
+                                    Huỷ
                                 </Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.touchClearAllFilter} onPress={() => this.onPressClearAll()}>
-                                <Text style={[styles.textClearAllFilter, {fontFamily: FontCustom.Regular}]}>
-                                    Clear All Filter
+                                <Text style={[styles.textClearAllFilter, { fontFamily: FontCustom.Regular }]}>
+                                    Xoá tất cả bộ lọc đã chọn
                                 </Text>
                             </TouchableOpacity>
                         </View>
@@ -316,12 +324,13 @@ export default class ListView extends React.Component {
                     <View style={styles.viewContainsTopSearch}>
                         <View style={styles.viewContainsSearch}>
                             <Image source={require('../../imagesrc/ic_header_search.png')} style={styles.imgSearch} />
-                            <TextInput placeholder={'Search...'} style={{ marginRight: 10 }}
+                            <TextInput placeholder={'Tìm kiếm...'} style={{ marginRight: 10, width: 200 }}
+                                underlineColorAndroid='transparent'
                                 onChangeText={(text) => this.SearchFilterFunction(text)} />
                         </View>
                         <View style={styles.viewHz} />
                         <View style={styles.viewTouchOpacity}>
-                            <TouchableOpacity style={styles.touchFilter} onPress={() => this.setState({ modalFilter: true })}>
+                            <TouchableOpacity style={styles.touchFilter} onPress={() => this.setModalFilter(true)}>
                                 <Text style={[styles.textFilter, { fontFamily: FontCustom.Regular }, { color: FontColor.ColorTextFilter }]}>
                                     Filter
                                  </Text>
@@ -353,7 +362,6 @@ export default class ListView extends React.Component {
     }
 
     async getTypeProduct() {
-
         try {
             let response = await fetch(
                 `${baseHost}${getType}`
@@ -366,16 +374,8 @@ export default class ListView extends React.Component {
         } catch (error) {
             console.error('LOI ' + error)
         }
-
     }
 
-    getTotal() {
-        totalP = 0
-        this.state.dataSaveOrderProduct.forEach(element => {
-            totalP = (element.price * element.number) + totalP
-        });
-        return totalP
-    }
 
     SearchFilterFunction(text) {
 
@@ -397,6 +397,7 @@ export default class ListView extends React.Component {
 
     async getAPI() {
         try {
+            this.setState({ visible: true })
             let response = await fetch(
                 `${baseHost}${apiGetall}`
             );
@@ -547,7 +548,7 @@ const styles = StyleSheet.create({
     closeViewCash: {
         position: 'absolute',
         right: 0,
-        marginTop: 30
+        marginTop: Platform.OS === 'android' ? 20 : 30
     },
     viewColorProduct: {
         flexDirection: 'row',
@@ -586,7 +587,8 @@ const styles = StyleSheet.create({
     touchAddProduct: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        flex: 1
+        flex: 1,
+        height: 22,
     },
     textAddProduct: {
         textAlign: 'center',
@@ -602,15 +604,14 @@ const styles = StyleSheet.create({
     },
     viewContainsFilter: {
         backgroundColor: 'white',
-        height: height - 30,
+        height: height - 40,
         width: width - 20,
-        marginBottom: 10,
-        marginTop: 20,
-        marginLeft: 8,
+        marginLeft: 10,
         marginRight: 10,
         borderRadius: 4
     },
     viewFilter: {
+        flex: 1,
         backgroundColor: 'rgba(52, 52, 52, 0.8)',
         height,
         width
@@ -620,11 +621,12 @@ const styles = StyleSheet.create({
         width: width - 20,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F1F4F9'
+        backgroundColor: '#F1F4F9',
+        borderRadius: 4
     },
     textTitleFilter: {
         textAlign: 'center',
-        fontSize: 14
+        fontSize: 16
     },
     touchCloseFilter: {
         position: 'absolute',
@@ -676,19 +678,19 @@ const styles = StyleSheet.create({
         color: '#00B297',
         textAlign: 'center'
     },
-    touchClearAllFilter:{
+    touchClearAllFilter: {
         width: width - 52,
-        marginLeft: 16, 
-        marginTop: 20, 
+        marginLeft: 16,
+        marginTop: 20,
         marginTop: 13,
-        marginBottom: 30, 
-        justifyContent: 'center', 
+        marginBottom: 30,
+        justifyContent: 'center',
         alignItems: 'center'
     },
-    textClearAllFilter: { 
-        fontSize: 14, 
-        color: '#00B297', 
-        textAlign: 'center' 
+    textClearAllFilter: {
+        fontSize: 14,
+        color: '#00B297',
+        textAlign: 'center'
     }
 
 })

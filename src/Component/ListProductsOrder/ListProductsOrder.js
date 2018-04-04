@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Dimensions, TextInput, Text, TouchableOpacity, Image, FlatList, Alert } from 'react-native';
+import { View, Dimensions, TextInput, Text, TouchableOpacity, Image, FlatList, Alert, Platform } from 'react-native';
 const { width, height } = Dimensions.get('window')
 import Global from '../Global'
 import { FontCustom, FontColor, formatConcurency } from '../../Contanst/index'
@@ -80,6 +80,14 @@ export default class ListProductsOrder extends Component {
         )
     }
 
+    getTotal() {
+        totalP = 0
+        this.props.dataProductsOrder.forEach(element => {
+            totalP = (element.price * element.number) + totalP
+        });
+        return totalP
+    }
+
     deleteItemList(index) {
         // Alert.alert(
         //     'Thông báo',
@@ -124,7 +132,8 @@ export default class ListProductsOrder extends Component {
     render() {
 
         return (
-            <View style={{ backgroundColor: 'white', height: height - 30, width: width - 20, marginBottom: 10, marginTop: 20, marginLeft: 8, marginRight: 10, borderRadius: 4 }}>
+            <View style={{ backgroundColor: 'white', height: Platform.OS === 'android' ? height - 40 :height - 30, width: width - 20, marginBottom: Platform.OS === 'android' ? 20: 10, 
+            marginTop: Platform.OS === 'android' ? 10: 20, marginLeft: 8, marginRight: 10, borderRadius: 4}}>
                 <FlatList
                     style={{ flex: 1, marginTop: 48 }}
                     numColumns={1}
@@ -132,9 +141,10 @@ export default class ListProductsOrder extends Component {
                     data={this.props.dataProductsOrder}
                     renderItem={({ item, index }) => this.renderItem(item, index)}
                 />
-                <TouchableOpacity style={{ height: 64, width: width - 20, backgroundColor: '#00B297', alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                <TouchableOpacity style={{ height: 64, width: width - 20, backgroundColor: '#00B297', 
+                    alignItems: 'center', justifyContent: 'center', flexDirection: 'row', borderRadius: 4 }}>
                     <Text style={{ textAlign: 'center', fontSize: 26, color: 'white', marginRight: -20 }}>
-                        {formatConcurency(this.props.total)} đ
+                        {formatConcurency(this.getTotal())} đ
                     </Text>
                     <Image source={require('../../imagesrc/ic_arrow_thanhtoan.png')}
                         style={{ width: 24, height: 24, position: 'absolute', right: 0, marginRight: 20 }} />

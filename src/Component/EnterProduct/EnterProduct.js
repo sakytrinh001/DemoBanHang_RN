@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { TextInput, Image, ScrollView, Dimensions, Text,
-     TouchableOpacity, View, StyleSheet, FlatList, Alert, RefreshControl } from 'react-native';
+import {
+    TextInput, Image, ScrollView, Dimensions, Text,
+    TouchableOpacity, View, StyleSheet, FlatList, Alert, RefreshControl
+} from 'react-native';
 const { width, height } = Dimensions.get('window')
 import { NavigationActions } from 'react-navigation';
 import Spinner from 'react-native-loading-spinner-overlay'
@@ -95,7 +97,7 @@ export default class EnterProduct extends React.Component {
                     })
                 }
 
-            });
+            }).catch(() => { });
         } else if (i === 1) {
             ImagePicker.openCamera({
                 width: 300,
@@ -115,14 +117,14 @@ export default class EnterProduct extends React.Component {
                         imgSourceSmall2: image
                     })
                 }
-            });
+            }).catch(() => { });
         }
     }
 
-    renderItem(item) {
+    renderItem(item, index) {
         return (
-            <TouchableOpacity style={item.isBackG ? styles.styleItemSelect : styles.styleItem} onPress={() => this.getItem(item)}>
-                <Text style={item.isBackG ? [styles.textItemSelect, { fontFamily: FontCustom.Regular }] : [styles.textItem, { fontFamily: FontCustom.Regular }, { color: FontColor.ColorTextApp }]}>
+            <TouchableOpacity style={item.isBackG == true ? styles.styleItemSelect : styles.styleItem} onPress={() => this.getItem(item, index)}>
+                <Text style={item.isBackG == true ? [styles.textItemSelect, { fontFamily: FontCustom.Regular }] : [styles.textItem, { fontFamily: FontCustom.Regular }, { color: FontColor.ColorTextApp }]}>
                     {item.key}
                 </Text>
             </TouchableOpacity>
@@ -130,30 +132,33 @@ export default class EnterProduct extends React.Component {
 
     }
 
-    getItem(item) {
+    getItem(item, index) {
+        // dataSize[index].isBackG = !dataSize[index].isBackG
         item.isBackG = !item.isBackG
+        console.log(item)
         dataSize.forEach(element => {
+
             if (element.isBackG) {
                 this.setState({
                     dataSizeSelect: this.state.dataSizeSelect.concat(element.key)
                 })
             }
         });
-        this.setState({
-            sizeSelect: item.key
-        })
+
     }
 
     onPressPlus() {
+        const { numberProduct } = this.state
         this.setState({
-            numberProduct: (this.state.numberProduct + 1)
+            numberProduct: (numberProduct + 1)
         })
     }
 
     onPressAbs() {
+        const { numberProduct } = this.state
         if (this.state.numberProduct > 1) {
             this.setState({
-                numberProduct: (this.state.numberProduct - 1)
+                numberProduct: (numberProduct - 1)
             })
         }
     }
@@ -223,6 +228,7 @@ export default class EnterProduct extends React.Component {
                             backgroundColor: 'white', borderRadius: 3, borderWidth: 1, borderColor: FontColor.ColorLineCell
                         }}>
                             <TextInput style={{ width: widthView, height: 50, fontSize: 16, fontFamily: FontCustom.Regular, marginLeft: 13 }} placeholder='Nhập tên'
+                                underlineColorAndroid='transparent'
                                 onChangeText={(text) => this.setState({
                                     nameProduct: text
                                 })}
@@ -239,6 +245,7 @@ export default class EnterProduct extends React.Component {
                             flexDirection: 'row'
                         }}>
                             <TextInput style={{ flex: 1, fontSize: 16, fontFamily: FontCustom.Regular, marginLeft: 13, height: 50 }}
+                                underlineColorAndroid='transparent'
                                 placeholder='Nhập giá' onChangeText={(text) => this.setState({ priceProduct: text })} keyboardType='numeric'
                             />
                             <Text style={{ fontSize: 16, fontFamily: FontCustom.Regular, color: FontColor.ColorTextApp, marginRight: 13 }}>
@@ -255,11 +262,11 @@ export default class EnterProduct extends React.Component {
                             backgroundColor: 'white', borderRadius: 3, borderWidth: 1, borderColor: FontColor.ColorLineCell, flexDirection: 'row'
                         }}>
                             <TextInput style={{ flex: 1, fontSize: 16, fontFamily: FontCustom.Regular, marginLeft: 13, width: widthView, height: 50 }} placeholder='Nhập khuyến mãi'
+                                underlineColorAndroid='transparent'
                                 keyboardType='numeric' onChangeText={(text) => this.setState({
                                     discountProduct: text
                                 }
-                                )}
-                            />
+                                )} />
                             <Text style={{ fontSize: 16, fontFamily: FontCustom.Regular, color: FontColor.ColorTextApp, marginRight: 13 }}>
                                 %
                         </Text>
@@ -276,9 +283,10 @@ export default class EnterProduct extends React.Component {
                             this.setState({ indexSelect: 2 }), this.ActionSheetB.show(), this.setState({ isShowView: true })
                         }}
                         >
-                            <TextInput style={{ flex: 1, fontSize: 16, fontFamily: FontCustom.Regular, marginLeft: 13 }} placeholder='Chọn tình trạng' editable={false} selectTextOnFocus={false}
-                                value={this.state.statusProduct}
-                            />
+                            <Text style={[styles.textResultStatus, { fontFamily: FontCustom.Regular }, { color: this.state.statusProduct == '' ? '#D8D8D8' : FontColor.ColorTextApp }]}
+                            >
+                                {this.state.statusProduct == '' ? 'Chọn tình trạng' : this.state.statusProduct}
+                            </Text>
                             <Image style={{ width: 15, height: 24, marginRight: 13 }} source={require('../../imagesrc/ic_row_down.png')} />
                         </TouchableOpacity>
                     </View>
@@ -293,9 +301,10 @@ export default class EnterProduct extends React.Component {
                             this.setState({ indexSelect: 3 }), this.ActionSheetC.show(), this.setState({ isShowView: true })
                         }}
                         >
-                            <TextInput style={{ flex: 1, fontSize: 16, fontFamily: FontCustom.Regular, marginLeft: 13 }} placeholder='Chọn chuyên mục' editable={false} selectTextOnFocus={false}
-                                value={this.state.categoryProduct}
-                            />
+                            <Text style={[styles.textResultStatus, { fontFamily: FontCustom.Regular }, { color: this.state.categoryProduct == '' ? '#D8D8D8' : FontColor.ColorTextApp }]}
+                            >
+                                {this.state.categoryProduct == '' ? 'Chọn chuyên mục' : this.state.categoryProduct}
+                            </Text>
                             <Image style={{ width: 15, height: 24, marginRight: 13 }} source={require('../../imagesrc/ic_row_down.png')} />
                         </TouchableOpacity>
                     </View>
@@ -314,7 +323,7 @@ export default class EnterProduct extends React.Component {
                                 <Image source={require('../../imagesrc/ic_giam.png')} style={{ width: 31.9, height: 24, marginLeft: 17.3, marginRight: 17.3 }} />
                                 <View style={{ width: 2.7, height: 50, backgroundColor: FontColor.ColorLineCell }} />
                             </TouchableOpacity>
-                            <Text style={{ flex: 1, textAlign: 'center' }}>
+                            <Text style={{ flex: 1, textAlign: 'center', color: FontColor.ColorTextApp }}>
                                 {this.state.numberProduct}
                             </Text>
                             <TouchableOpacity style={{ width: 66.5, width: 66.5, marginLeft: 17.3, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}
@@ -330,7 +339,7 @@ export default class EnterProduct extends React.Component {
                         color: FontColor.ColorTextFilter, marginTop: 20
                     }}>
                         Màu sắc
-                </Text>
+                    </Text>
                     <View style={{ height: 48, width: widthView, marginTop: 9, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>
                         <TouchableOpacity style={{ height: 32, width: 32, marginLeft: 16, borderRadius: 16, backgroundColor: 'red' }} />
                         <TouchableOpacity style={{ height: 48, width: 48, marginLeft: 28, borderRadius: 24, borderColor: '#899DC1', borderWidth: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -342,7 +351,7 @@ export default class EnterProduct extends React.Component {
                         color: FontColor.ColorTextFilter, marginTop: 20
                     }}>
                         Size
-                </Text>
+                    </Text>
                     <FlatList style={{ flex: 1, marginTop: 8, marginLeft: 2, width: (width - 4), height: ((width - 4) / 6) * 2 + 12 }}
                         numColumns={6}
                         keyExtractor={this._keyExtractor}
@@ -359,7 +368,7 @@ export default class EnterProduct extends React.Component {
                         }} >
                             <Text style={{ color: '#00B297', fontFamily: FontCustom.Regular, fontSize: 16, textAlign: 'center' }}>
                                 Huỷ
-                        </Text>
+                            </Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={{
                             width: (widthView - 7.5) / 2, height: 50, marginLeft: 7.5, borderRadius: 4,
@@ -370,7 +379,6 @@ export default class EnterProduct extends React.Component {
                         </Text>
                         </TouchableOpacity>
                     </View>
-                    />
                 </ScrollView>
                 <Spinner visible={this.state.isVisibleSpinner} color={'black'} size={'small'} animation={'none'} />
             </View>
@@ -407,8 +415,14 @@ export default class EnterProduct extends React.Component {
             })
     }
     onPressSave() {
+        const { imgSourceLager, nameProduct, priceProduct, idTypeProduct, statusProduct } = this.state
+        if (imgSourceLager == null ||  nameProduct == '' || priceProduct == '' 
+            || idTypeProduct == '' || statusProduct == ''){
+                Alert.alert('Thông báo', 'Nhập đầy đủ thông tin để lưu sản phẩm.\nCảm ơn!')
+                return
+        }
         this.setState({ isVisibleSpinner: true });
-        const { imgSourceLager } = this.state
+        console.log(imgSourceLager.path)
         const formData = new FormData();
         formData.append('csv', {
             uri: imgSourceLager.path,
@@ -609,13 +623,19 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     imgSmallShow1: {
-        flex: 1, 
-        position: 'absolute', 
-        width: (width - 25) / 2, 
-        height: 175, 
-        borderRadius: 3, 
+        flex: 1,
+        position: 'absolute',
+        width: (width - 25) / 2,
+        height: 175,
+        borderRadius: 3,
         borderWidth: 1,
         borderColor: FontColor.ColorLineCell
 
+    },
+    textResultStatus: {
+        flex: 1,
+        fontSize: 16,
+        marginLeft: 13,
+        textAlign: 'left'
     }
 })
